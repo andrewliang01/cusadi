@@ -1,13 +1,33 @@
 import os
 import time
 import argparse
+from ament_index_python.packages import get_package_share_directory
 from casadi import *
 from src import *
+
+
 
 # TODO: REPEAT BENCHMARK WITH TORCH VMAP INSTEAD OF VECTORIZING WITH DICT.
 def main(args):
     casadi_fns = []
-    fn_dir = CUSADI_BENCHMARK_DIR if args.codegen_benchmark_fns else CUSADI_FUNCTION_DIR
+    # fn_dir = CUSADI_BENCHMARK_DIR if args.codegen_benchmark_fns else CUSADI_FUNCTION_DIR
+    try:
+    # 获取ROS2包的共享目录路径
+        package_path = get_package_share_directory("optimal_control_problem")
+
+        # 拼接子目录路径
+        fn_dir = os.path.join(package_path, "code_gen")
+
+        # 验证路径是否存在
+        if not os.path.exists(fn_dir):
+            print(f"警告：路径 {fn_dir} 不存在，可能需要手动创建或检查包安装")
+        else:
+            print(f"代码生成目录：{fn_dir}")
+
+    except PackageNotFoundError:
+        print(f"错误：包 'optimal_control_problem' 未找到，请确保：")
+        print("1. 已通过 colcon build 编译该包")
+        print("2. 当前环境已 source install/setup.bash")
     for filename in os.listdir(fn_dir):
         f = os.path.join(fn_dir, filename)
         if os.path.isfile(f) and f.endswith(".casadi"):
