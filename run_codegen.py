@@ -5,7 +5,7 @@ from casadi import *
 from src import *
 
 # TODO: REPEAT BENCHMARK WITH TORCH VMAP INSTEAD OF VECTORIZING WITH DICT. 
-
+????
 def main(args):
     casadi_fns = []
     fn_dir = CUSADI_BENCHMARK_DIR if args.codegen_benchmark_fns else CUSADI_FUNCTION_DIR
